@@ -114,3 +114,61 @@ func TestPerimeter(t *testing.T) {
     }
 }
 ```
+
+## Storing Structs in a File
+
+Structs and struct slices can be stored in a file while preserving a structure.
+
+### Encoding 
+
+Only capitalized fields (e.g. `Population`, not `population`) can be stored in a
+file.
+
+```go
+f, err := os.OpenFile("countries.json", os.O_WRONLY|os.O_CREATE, 0600)
+if err != nil {
+    log.Fatal(err)
+}
+defer f.Close()
+w := bufio.NewWriter(f)
+defer w.Flush()
+// countries is a slice of anonymous structs in this example.
+countries := []struct {
+    Name, Capital string
+    population    int // This is an unexported field.
+}{
+    {"Latvia", "Riga", 1_902_000},
+    {"Switzerland", "Bern", 8_637_000},
+}
+if err := json.NewEncoder(w).Encode(countries); err != nil {
+    log.Fatal(err)
+}
+```
+
+The content of `countries.json`:
+
+```
+[{"Name":"Latvia","Capital":"Riga"},{"Name":"Switzerland","Capital":"Bern"}]
+```
+
+### Decoding
+
+```go
+type country struct{
+    Name, Capital string
+    population int
+    Space int
+}
+
+var countries []country
+f, err := os.OpenFile("countries.json", os.O_RDONLY, 0600)
+if err != nil {
+    log.Fatal(err)
+}
+defer f.Close()
+if err := json.NewDecoder(bufio.NewReader(f)).Decode(&countries); err != nil {
+  log.Fatal(err)
+}
+fmt.Printf("%+v", countries)
+// [{Name:Latvia Capital:Riga population:0 Space:0} {Name:Switzerland Capital:Bern population:0 Space:0}]
+```
