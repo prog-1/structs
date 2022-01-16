@@ -87,3 +87,30 @@ book := struct {
 fmt.Println(book) // {Animal Farm George Orwell 112}
 fmt.Printf("%+v", book) // {title:Animal Farm author:George Orwell pages:112}
 ```
+
+### Use of anonymous structs in tests
+
+You have already been using anonymous structs in tests. See an example below.
+
+```
+func perimeter(width float64, height float64) float64 {
+    return 2 * (width + height)
+}
+
+func TestPerimeter(t *testing.T) {
+    for _, t := range []struct {
+        desc string
+        width float64
+        height float64
+        want float64
+    } {
+        {"zeros", 0, 0, 0},
+        {"int values", 5, 3, 30},
+        {"float values", math.Pi, 5, 2 * (math.Pi + 5)},
+    } {
+        if got := perimeter(t.width, t.height); got != want {
+            t.Errorf("%s: got %.2f want %.2f", desc, got, want)
+        }
+    }
+}
+```
