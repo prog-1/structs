@@ -92,8 +92,8 @@ fmt.Printf("%+v", book) // {title:Animal Farm author:George Orwell pages:112}
 
 You have already been using anonymous structs in tests. See an example below.
 
-```
-func perimeter(width float64, height float64) float64 {
+```go
+gofunc perimeter(width float64, height float64) float64 {
     return 2 * (width + height)
 }
 
