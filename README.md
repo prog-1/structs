@@ -163,7 +163,7 @@ type country struct{
 }
 
 var countries []country
-f, err := os.OpenFile("countries.json", os.O_RDONLY, 0600)
+f, err := os.Open("countries.json")
 if err != nil {
     log.Fatal(err)
 }
