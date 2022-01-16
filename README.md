@@ -93,23 +93,23 @@ fmt.Printf("%+v", book) // {title:Animal Farm author:George Orwell pages:112}
 You have already been using anonymous structs in tests. See an example below.
 
 ```go
-gofunc perimeter(width float64, height float64) float64 {
+func perimeter(width float64, height float64) float64 {
     return 2 * (width + height)
 }
 
 func TestPerimeter(t *testing.T) {
-    for _, t := range []struct {
+    for _, tc := range []struct {
         desc string
         width float64
         height float64
         want float64
     } {
         {"zeros", 0, 0, 0},
-        {"int values", 5, 3, 30},
+        {"int values", 5, 3, 16},
         {"float values", math.Pi, 5, 2 * (math.Pi + 5)},
     } {
-        if got := perimeter(t.width, t.height); got != want {
-            t.Errorf("%s: got %.2f want %.2f", desc, got, want)
+        if got := perimeter(tc.width, tc.height); got != tc.want {
+            t.Errorf("%s: got %.2f want %.2f", tc.desc, got, tc.want)
         }
     }
 }
