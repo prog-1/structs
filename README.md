@@ -117,7 +117,9 @@ func TestPerimeter(t *testing.T) {
 
 ## Storing Structs in a File
 
-Structs and struct slices can be stored in a file while preserving a structure.
+Structs and struct slices can be stored in a
+[JSON](https://en.wikipedia.org/wiki/JSON) file while preserving a structure
+(using `encoding/json` package).
 
 ### Encoding 
 
