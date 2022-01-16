@@ -127,7 +127,7 @@ Only capitalized fields (e.g. `Population`, not `population`) can be stored in a
 file.
 
 ```go
-f, err := os.OpenFile("countries.json", os.O_WRONLY|os.O_CREATE, 0600)
+f, err := os.Create("countries.json")
 if err != nil {
     log.Fatal(err)
 }
