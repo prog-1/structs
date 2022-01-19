@@ -242,3 +242,41 @@ Note the following aspects:
 * `Record.Field2` is renamed to `foo` and is omitted for empty strings.
 * `Record.Field3` is renamed to `bar` and is present even for empty values.
 * `Record.Field4` goes untouched.
+
+## Methods
+
+https://go.dev/tour/methods/1
+
+Go does not have [classes](https://en.wikipedia.org/wiki/Class_(computer_programming)), however it allows to define methods on types.
+Methods are functions with a special _receiver_ argument, which appears between `func` keyword and the method name.
+
+In this example, the `Abs` method has a receiver of type `Vertex` named `v`:
+
+```go
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+type Vertex struct {
+	X, Y float64
+}
+
+func (v Vertex) Abs() float64 {
+	return math.Sqrt(v.X*v.X + v.Y*v.Y)
+}
+
+func main() {
+	v := Vertex{3, 4}
+	fmt.Println(v.Abs())
+}
+```
+
+Note: I recommend `Type.Method` syntax, in which case you always know both - method name and its receiver type.
+
+Methods are attached to their receivers and allow to create functions that implement algorithms without knowing about
+about the data those algorithms work with. We will be dealing with this in the future. For now it's important that you
+understand what methods are and can use them as almost all of the libraries provide structures with methods e.g.
+[os.File](https://pkg.go.dev/os#File), which has more than 20 methods like `os.File.Read()`, `os.File.Close()`, etc.
