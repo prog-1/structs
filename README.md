@@ -174,3 +174,71 @@ if err := json.NewDecoder(bufio.NewReader(f)).Decode(&countries); err != nil {
 fmt.Printf("%+v", countries)
 // [{Name:Latvia Capital:Riga population:0 Space:0} {Name:Switzerland Capital:Bern population:0 Space:0}]
 ```
+
+# Field Tags
+
+[Go struct specification](https://go.dev/ref/spec#Struct_types) allows adding tags to the fields e.g.
+
+```go
+struct {
+    field1 string "this is my tag"
+    field2 int    `json:"foo"`
+}
+```
+
+The tags are arbitrary strings, however various libraries use them for [metadata](https://en.wikipedia.org/wiki/Metadata) purpose.
+Examples of such libraries include `encoding/json`, `encoding/xml`, `encoding/gob`, etc. As you can see, encoding libraries use this
+feature a lot! Defacto syntax for the tags is the following: \`library1:"data1[,data2[,...]]"[ library2:"..."]\`.
+
+Consider the following [example](https://go.dev/play/p/DlOaU9w0Ux4):
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+)
+
+type Record struct {
+	Field1 string `json:"-"`
+	Field2 string `json:"foo,omitempty"`
+	Field3 string `json:"bar"`
+	Field4 string
+}
+
+func main() {
+	out, err := json.MarshalIndent([]Record{
+		{Field1: "a", Field2: "b", Field3: "c", Field4: "d"},
+		{Field1: "a"},
+	}, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(out))
+}
+```
+
+and its output
+
+```text
+[
+  {
+    "foo": "b",
+    "bar": "c",
+    "Field4": "d"
+  },
+  {
+    "bar": "",
+    "Field4": ""
+  }
+]
+```
+
+Note the following aspects:
+
+* `Record.Field1` is omitted.
+* `Record.Field2` is renamed to `foo` and is omitted for empty strings.
+* `Record.Field3` is renamed to `bar` and is present even for empty values.
+* `Record.Field4` goes untouched.
